@@ -1,0 +1,23 @@
+{
+    "name": "Gelbeseiten Scraper",
+    "description": "This scraper extracts business listings, contact info, and category data from GelbeSeiten.de...Germany's leading online directory. Ideal for B2B lead generation, sales outreach, and local SEO automation. Explore structured data from millions of verified German businesses in real-time.",
+    "type": "scraper",
+    "input": {
+      "fields": [
+        {
+          "label": "Search Keyword",
+          "name": "keyword",
+          "type": "text",
+          "placeholder": "Enter keyword to scrape"
+        },
+        {
+          "label": "Location",
+          "name": "location",
+          "type": "text",
+          "placeholder": "Enter location to scrape"
+        }
+      ],
+      "header": ["name", "category", "rating", "telephone", "fax", "website", "email", "address"]
+    }
+  }
+  

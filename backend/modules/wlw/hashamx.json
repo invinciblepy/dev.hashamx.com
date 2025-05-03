@@ -1,0 +1,17 @@
+{
+    "name": "WLW Scraper",
+    "description": "This scraper collects supplier profiles, product categories, and company contact details from wlw.de... Europe's leading B2B sourcing platform. Use it to discover manufacturers, wholesalers, and service providers across industries. Ideal for procurement automation, supplier research, and sales prospecting in the DACH region and beyond.",
+    "type": "scraper",
+    "input": {
+      "fields": [
+        {
+          "label": "URL",
+          "name": "url",
+          "type": "text",
+          "placeholder": "Enter URL to scrape"
+        }
+      ],
+      "header": ["name", "street", "city", "zip_code", "country", "supplier_types", "phone_number", "homepage", "slug", "description", "employee_count", "product_count", "distribution_area", "founding_year", "average_response_time"]
+    }
+}
+  
