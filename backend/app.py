@@ -6,23 +6,26 @@ import threading
 from flask import Flask, send_from_directory, jsonify, request
 from flask_cors import CORS
 
-app = Flask(__name__, static_folder="./frontend/build", template_folder="./frontend/build")
+app = Flask(__name__, static_folder="frontend/build")
 CORS(app)
 
 # Store task results in memory
 results = {}
+IS_PRODUCTION = os.environ.get("FLASK_ENV") == "production"
+API_PREFIX = "" if IS_PRODUCTION else "/api"
 
-# Serve React static files
-@app.route("/", defaults={"path": ""})
-@app.route("/<path:path>")
-def serve(path):
-    full_path = os.path.join(app.static_folder, path)
-    if path and os.path.exists(full_path):
-        return send_from_directory(app.static_folder, path)
-    return send_from_directory(app.static_folder, "index.html")
+if not IS_PRODUCTION:
+    @app.route("/", defaults={"path": ""})
+    @app.route("/<path:path>")
+    def serve(path):
+        full_path = os.path.join(app.static_folder, path)
+        if path and os.path.exists(full_path):
+            return send_from_directory(app.static_folder, path)
+        return send_from_directory(app.static_folder, "index.html")
+
 
 # List all scraper modules
-@app.route("/api/scrapers")
+@app.route(f"{API_PREFIX}/scrapers")
 def list_scrapers():
     modules_dir = os.path.join(os.path.dirname(__file__), "modules")
     scrapers = [
@@ -32,7 +35,7 @@ def list_scrapers():
     return jsonify(scrapers)
 
 # Load scraper config (hashamx.json)
-@app.route("/api/scraper/<scraperName>")
+@app.route(f"{API_PREFIX}/scraper/<scraperName>")
 def get_scraper(scraperName):
     try:
         module_path = os.path.join("modules", scraperName, "hashamx.json")
@@ -65,7 +68,7 @@ def run_scraper_task(scraper_name, data, task_id):
         }
 
 # Start scraper in background
-@app.route("/api/run-scraper", methods=["POST"])
+@app.route(f"{API_PREFIX}/run-scraper", methods=["POST"])
 def run_scraper():
     req = request.get_json()
     scraper_name = req.get("scraper")
@@ -81,7 +84,7 @@ def run_scraper():
     return jsonify({"task_id": task_id})
 
 # Poll task status
-@app.route("/api/status/<task_id>")
+@app.route(f"{API_PREFIX}/status/<task_id>")
 def check_status(task_id):
     result = results.get(task_id)
     if not result:
