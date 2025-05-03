@@ -7,7 +7,7 @@ function HomePage() {
 
   useEffect(() => {
     // Fetch scrapers from the backend API
-    fetch('http://localhost:5000/api/scrapers')
+    fetch('/api/scrapers')
       .then(response => response.json())
       .then(data => setScrapers(data))
       .catch(error => console.error('Error fetching scrapers:', error));

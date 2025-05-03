@@ -6,7 +6,7 @@ import threading
 from flask import Flask, send_from_directory, jsonify, request
 from flask_cors import CORS
 
-app = Flask(__name__, static_folder="frontend/build")
+app = Flask(__name__, static_folder="./frontend/build", template_folder="./frontend/build")
 CORS(app)
 
 # Store task results in memory

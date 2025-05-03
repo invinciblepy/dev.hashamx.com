@@ -13,7 +13,7 @@ function ProjectsPage() {
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-    fetch(`http://localhost:5000/api/scraper/${scraperName}`)
+    fetch(`/api/scraper/${scraperName}`)
       .then(res => res.json())
       .then(config => {
         setScraperConfig(config);
@@ -42,7 +42,7 @@ function ProjectsPage() {
     setResultItems([]);
     setErrorMessage("");
 
-    fetch(`http://localhost:5000/api/run-scraper`, {
+    fetch(`/api/run-scraper`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ scraper: scraperName, data: formData }),
