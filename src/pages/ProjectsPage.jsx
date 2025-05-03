@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { host } from "../host";
 
 function ProjectsPage() {
   const { scraperName } = useParams();
@@ -13,7 +14,7 @@ function ProjectsPage() {
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-    fetch(`/api/scraper/${scraperName}`)
+    fetch(`${host()}/api/scraper/${scraperName}`)
       .then(res => res.json())
       .then(config => {
         setScraperConfig(config);
@@ -42,7 +43,7 @@ function ProjectsPage() {
     setResultItems([]);
     setErrorMessage("");
 
-    fetch(`/api/run-scraper`, {
+    fetch(`${host()}/api/run-scraper`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ scraper: scraperName, data: formData }),
@@ -53,7 +54,7 @@ function ProjectsPage() {
       })
       .then(({ task_id }) => {
         const interval = setInterval(() => {
-          fetch(`http://localhost:5000/api/status/${task_id}`)
+          fetch(`${host()}/api/status/${task_id}`)
             .then(res => res.json())
             .then(statusData => {
               if (statusData.status === "done") {

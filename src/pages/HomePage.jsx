@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { host } from "../host";
 
 function HomePage() {
   const navigate = useNavigate();
@@ -7,7 +8,7 @@ function HomePage() {
 
   useEffect(() => {
     // Fetch scrapers from the backend API
-    fetch('/api/scrapers')
+    fetch(`${host()}/api/scrapers`)
       .then(response => response.json())
       .then(data => setScrapers(data))
       .catch(error => console.error('Error fetching scrapers:', error));
