@@ -8,10 +8,12 @@ import ProjectsPage from "./pages/ProjectsPage";
 
 function App() {
   return (
+    <Router>
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/project/:scraperName" element={<ProjectsPage />} />
       </Routes>
+    </Router>
   );
 }
 
