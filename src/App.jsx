@@ -11,7 +11,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/project/:scraperName" element={<ProjectsPage />} />
+        <Route path="/project/:moduleName" element={<ProjectsPage />} />
       </Routes>
     </Router>
   );

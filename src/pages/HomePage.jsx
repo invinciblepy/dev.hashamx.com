@@ -4,14 +4,13 @@ import { host } from "../host";
 
 function HomePage() {
   const navigate = useNavigate();
-  const [scrapers, setScrapers] = useState([]);
+  const [modules, setModules] = useState([]);
 
   useEffect(() => {
-    // Fetch scrapers from the backend API
-    fetch(`${host()}/api/scrapers`)
+    fetch(`${host()}/api/modules`)
       .then(response => response.json())
-      .then(data => setScrapers(data))
-      .catch(error => console.error('Error fetching scrapers:', error));
+      .then(data => setModules(data))
+      .catch(error => console.error('Error fetching modules:', error));
   }, []);
 
   return (
@@ -19,7 +18,7 @@ function HomePage() {
       <header className="hero-header header">
         <h1>👨‍💻 Welcome to <span className="brand">dev.hashamx.com</span> 🚀</h1>
         <p className="subtitle">
-          Explore live Python scrapers, automation tools, and open-source projects — ready to run, right here in your browser. ⚙️🐍
+          Explore live Python modules, automation tools, and open-source projects — ready to run, right here in your browser. ⚙️🐍
         </p>
         <a
           href="https://github.com/invinciblepy"
@@ -31,12 +30,12 @@ function HomePage() {
         </a>
       </header>
       <div className="cards">
-        {scrapers.map((scraper, index) => (
-          <div key={index} className="card-advanced" onClick={() => navigate(`/project/${scraper}`)}>
+        {modules.map((module, index) => (
+          <div key={index} className="card-advanced" onClick={() => navigate(`/project/${module.name}`)}>
             <div className="card-icon">🛰️</div>
-            <h3>{scraper}</h3>
-            <p>Explore this scraper in real-time</p>
-            <span className="badge">Live</span>
+            <h3>{module.name}</h3>
+            <p>{module.description}</p>
+            <span className="badge">{module.premium ? "Premium" : "Free"}</span>
           </div>
         ))}
       </div>

@@ -3,10 +3,10 @@ import { useState, useEffect } from "react";
 import { host } from "../host";
 
 function ProjectsPage() {
-  const { scraperName } = useParams();
+  const { moduleName } = useParams();
   const navigate = useNavigate();
 
-  const [scraperConfig, setScraperConfig] = useState(null);
+  const [moduleConfig, setModuleConfig] = useState(null);
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
   const [hasRun, setHasRun] = useState(false);
@@ -14,24 +14,24 @@ function ProjectsPage() {
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-    fetch(`${host()}/api/scraper/${scraperName}`)
+    fetch(`${host()}/api/module/${moduleName}`)
       .then(res => res.json())
       .then(config => {
-        setScraperConfig(config);
+        setModuleConfig(config);
         const initialData = {};
-        config.fields.forEach(field => {
+        config.inputs.forEach(field => {
           initialData[field.name] = "";
         });
         setFormData(initialData);
       })
       .catch(err => console.error("Error loading config:", err));
-  }, [scraperName]);
+  }, [moduleName]);
 
   const handleChange = (name, value) => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleRunScraper = () => {
+  const handleRunmodule = () => {
     const emptyFields = Object.entries(formData).filter(([_, v]) => !v.trim());
     if (emptyFields.length > 0) {
       setErrorMessage(`Please fill in all fields: ${emptyFields.map(([f]) => f).join(', ')}`);
@@ -43,13 +43,13 @@ function ProjectsPage() {
     setResultItems([]);
     setErrorMessage("");
 
-    fetch(`${host()}/api/run-scraper`, {
+    fetch(`${host()}/api/run-module`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ scraper: scraperName, data: formData }),
+      body: JSON.stringify({ module: moduleName, data: formData }),
     })
       .then(res => {
-        if (!res.ok) throw new Error("Failed to start scraper");
+        if (!res.ok) throw new Error("Failed to start module");
         return res.json();
       })
       .then(({ task_id }) => {
@@ -76,7 +76,7 @@ function ProjectsPage() {
         }, 5000);
       })
       .catch(err => {
-        setErrorMessage("Failed to start scraper: " + err.message);
+        setErrorMessage("Failed to start module: " + err.message);
         setLoading(false);
       });
   };
@@ -85,15 +85,15 @@ function ProjectsPage() {
 
   return (
     <div className="scraper-page">
-      {scraperConfig && (
+      {moduleConfig && (
         <>
           <div className="scraper-header">
-            <h2 className="scraper-title">🧩 {scraperConfig.name}</h2>
-            <p className="scraper-description">{scraperConfig.description}</p>
+            <h2 className="scraper-title">🧩 {moduleConfig.name}</h2>
+            <p className="scraper-description">{moduleConfig.description}</p>
           </div>
 
           <div className="scraper-form">
-            {scraperConfig.fields.map((field, idx) => (
+            {moduleConfig.inputs.map((field, idx) => (
               <div key={idx} className="form-group">
                 <label>{field.label}</label>
                 <input
@@ -113,8 +113,8 @@ function ProjectsPage() {
             <button onClick={() => navigate("/")} className="btn btn-secondary">
               ← Back to Home
             </button>
-            <button onClick={handleRunScraper} className="btn btn-primary" disabled={loading}>
-              {loading ? "Running..." : "Run Scraper"}
+            <button onClick={handleRunmodule} className="btn btn-primary" disabled={loading}>
+              {loading ? "Running..." : "Run module"}
             </button>
           </div>
 
@@ -125,14 +125,14 @@ function ProjectsPage() {
           {hasRun && resultItems.length > 0 && (
             <>
               <p className="results-note">
-                ⚠️ This is a demo version. More scrapers on{' '}
-                <a href="https://github.com/invinciblepy" target="_blank" rel="noopener noreferrer">GitHub</a>.
+                ⚠️ This is a demo version. More modules on{' '}
+                <a href={moduleConfig.repository} target="_blank" rel="noopener noreferrer">GitHub</a>.
               </p>
               <div className="table-container">
                 <table className="results-table">
                   <thead>
                     <tr>
-                      {scraperConfig.header.map((key) => (
+                      {moduleConfig.outputs.map((key) => (
                         <th key={key}>{capitalize(key)}</th>
                       ))}
                     </tr>
@@ -140,7 +140,7 @@ function ProjectsPage() {
                   <tbody>
                     {resultItems.map((item, idx) => (
                       <tr key={idx}>
-                        {scraperConfig.header.map((key) => {
+                        {moduleConfig.outputs.map((key) => {
                           const value = item[key] || "";
                           const shortValue = value.length > 30 ? value.slice(0, 27) + "..." : value;
                           return (
